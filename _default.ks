@@ -1,1 +1,1 @@
-centos-6-base.ks.tpl
+centos-6-base.ks
