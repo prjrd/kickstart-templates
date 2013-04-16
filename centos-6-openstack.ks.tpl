@@ -10,7 +10,6 @@ selinux --enforcing
 timezone --utc Europe/London
 bootloader --location=mbr --driveorder=sda
 repo --name="CentOS" --baseurl=http://repohost.raindrops.centos.org/centos/6/os/x86_64/ --cost=100
-repo --name="ONE-context" --baseurl=http://repohost.raindrops.centos.org/opennebula/6/x86_64/ --cost=100
 repo --name="EPEL" --baseurl=http://repohost.raindrops.centos.org/epel/6/x86_64/ --cost=100
 zerombr yes
 clearpart --all --initlabel
