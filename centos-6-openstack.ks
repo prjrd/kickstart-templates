@@ -19,6 +19,7 @@ volgroup VolGroup00 --pesize=32768 pv.2
 logvol / --fstype ext4 --name=LogVol00 --vgname=VolGroup00 --size=1024 --grow
 logvol swap --fstype swap --name=LogVol01 --vgname=VolGroup00 --size=256 --grow --maxsize=512
 reboot
+user --name="ec2-user"
 %packages
 @Base
 @Core
@@ -35,6 +36,5 @@ for f in /etc/grub.conf /boot/grub/menu.lst /boot/grub/grub.conf; do
   sed -i "s/^terminal.*$/terminal –timeout=10 console serial/" ${f}
   sed -i "s/console=ttyS0,115200/console=tty0 console=ttyS0,115200n8/" ${f}
 done
-useradd ec2-user
 echo -e 'ec2-user\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 %end
