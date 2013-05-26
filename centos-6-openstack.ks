@@ -24,13 +24,17 @@ reboot
 @Core
 cloud-init
 %end
-%post --log=/root/post.log --nochroot
-sed -i "s/^ACTIVE_CONSOLES=\/dev\/tty\[1-6\]/ACTIVE_CONSOLES=\/dev\/tty1/" /mnt/sysimage/etc/sysconfig/init
-sed -i "/HWADDR/d" /mnt/sysimage/etc/sysconfig/network-scripts/ifcfg-eth*
-rm -f /mnt/sysimage/etc/udev/rules.d/70-persistent-net.rules
+%post --log=/root/post.log
+echo "NOZEROCONF=yes" >> /etc/sysconfig/network
+echo "S0:2345:respawn:/sbin/agetty ttyS0 115200 linux" >> /etc/inittab
+sed -i "s/^ACTIVE_CONSOLES=\/dev\/tty\[1-6\]/ACTIVE_CONSOLES=\/dev\/tty1/" /etc/sysconfig/init
+sed -i "/HWADDR/d" /etc/sysconfig/network-scripts/ifcfg-eth*
+rm -f /etc/udev/rules.d/70-persistent-net.rules
 for f in /etc/grub.conf /boot/grub/menu.lst /boot/grub/grub.conf; do
-  /bin/sed -i "s/^serial.*$//" /mnt/sysimage/${f}
-  /bin/sed -i "s/^terminal.*$//" /mnt/sysimage/${f}
-  /bin/sed -i "s/console=ttyS0,115200//" /mnt/sysimage/${f}
+  sed -i "s/^serial.*$/serial –unit=0 –speed=115200/" ${f}
+  sed -i "s/^terminal.*$/terminal –timeout=10 console serial/" ${f}
+  sed -i "s/console=ttyS0,115200/console=tty0 console=ttyS0,115200n8/" ${f}
 done
+useradd ec2-user
+echo -e 'ec2-user\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 %end
