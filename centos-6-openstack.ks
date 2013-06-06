@@ -27,6 +27,7 @@ cloud-init
 %end
 %post --log=/root/post.log
 echo "NOZEROCONF=yes" >> /etc/sysconfig/network
+sed -i 's/set_hostname/set_hostname\n - update_etc_hosts/' /etc/cloud/cloud.cfg 
 echo "S0:2345:respawn:/sbin/agetty ttyS0 115200 linux" >> /etc/inittab
 sed -i "s/^ACTIVE_CONSOLES=\/dev\/tty\[1-6\]/ACTIVE_CONSOLES=\/dev\/tty1/" /etc/sysconfig/init
 sed -i "/HWADDR/d" /etc/sysconfig/network-scripts/ifcfg-eth*
