@@ -25,6 +25,18 @@ reboot
 cloud-init
 %end
 %post --log=/root/post.log --nochroot
+
+# Change default user to 'centos' as per RHEL cloud policy
+
+# cloud-init 0.7 config format
+#sed -i 's/ name: cloud-user/ name: centos/g' /etc/cloud/cloud.cfg
+sed -i 's/name: cloud-user/name: centos\
+    lock_passwd: True\
+    gecos: CentOS\
+    groups: \[adm, audio, cdrom, dialout, floppy, video, dip\]\
+    sudo: \[\"ALL=(ALL) NOPASSWD:ALL\"\]\
+    shell: \/bin\/bash/' /etc/cloud/cloud.cfg
+
 sed -i "s/^ACTIVE_CONSOLES=\/dev\/tty\[1-6\]/ACTIVE_CONSOLES=\/dev\/tty1/" /mnt/sysimage/etc/sysconfig/init
 sed -i "/HWADDR/d" /mnt/sysimage/etc/sysconfig/network-scripts/ifcfg-eth*
 rm -f /mnt/sysimage/etc/udev/rules.d/70-persistent-net.rules
